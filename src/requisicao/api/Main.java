@@ -12,12 +12,12 @@ public class Main {
 
 	public static void main(String[] args) throws URISyntaxException {
 
-		Config apikey = new Config();
+		Config config = new Config();
 		
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest
 			.newBuilder()
-			.uri(new URI("https://imdb-api.com/en/API/Top250Movies/" + apikey.getApikey()))
+			.uri(new URI("https://imdb-api.com/en/API/Top250Movies/" + config.getApikey()))
 			.GET()
 			.build();
 		
