@@ -1,46 +1,31 @@
-package requisicao.api;
+package com.imdb.top250filmes;
 
-
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandlers;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+public class Treatment {
 
-
-public class Main {
-
-	public static void main(String[] args) {
+	static List<Movie> unityMovies(String json) {
 		
-		String apiKeyIMDB = System.getenv("ApiKeyIMDB");
-		URI apiIMDB = URI.create("https://imdb-api.com/en/API/Top250Movies/" + apiKeyIMDB);
-		
-		HttpClient client = HttpClient.newHttpClient();
-		HttpRequest request = HttpRequest.newBuilder().uri(apiIMDB).build();
-		
-		String json = client.sendAsync(request, BodyHandlers.ofString()).thenApply(HttpResponse::body).join();
-			
 		String[] moviesArray = parseJsonMovies(json);
-		System.out.println(moviesArray[0]);
 		
 		List<String> titles =  parseTitles(moviesArray);
-		titles.forEach(System.out::println);
-		
 		List<String> images =  parseUrlImages(moviesArray);
-		images.forEach(System.out::println);
-		
-		List<String> year =  parseYear(moviesArray);
-		year.forEach(System.out::println);
-		
 		List<String> rating =  parseRating(moviesArray);
-		rating.forEach(System.out::println);		
+		List<String> year =  parseYear(moviesArray);
 
+
+		List<Movie> movies = new ArrayList<>(titles.size());
+		
+		for(int i=0; i < titles.size(); i++) {
+			movies.add(new Movie(titles.get(i), images.get(i), rating.get(i), year.get(i)));
+		}
+		
+		return movies;
 	}
 	
 	private static String[] parseJsonMovies (String json) {
@@ -84,4 +69,5 @@ public class Main {
 	private static List<String> parseRating(String[] moviesArray){
 		return parseAttribute(moviesArray, 7);
 	}
+	
 }
